@@ -1,0 +1,2274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monogram — Every Room Has a Story</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@200;300;400;500;600&family=EB+Garamond:ital,wght@1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --warm-white: #FAF7F2;
+    --charcoal: #1A1714;
+    --dark-brown: #2B2318;
+    --terracotta: #C06840;
+    --terracotta-light: #D4845E;
+    --linen: #DDD3C0;
+    --linen-dark: #C4B8A4;
+    --gold: #A8885A;
+    --muted-text: #6B5F52;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Jost', sans-serif;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--warm-white);
+    color: var(--charcoal);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ── LOADER ── */
+  #loader {
+    position: fixed; inset: 0;
+    background: var(--charcoal);
+    z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+  #loader.hidden { opacity: 0; visibility: hidden; }
+
+  .loader-logo {
+    font-family: var(--serif);
+    font-size: 48px;
+    font-weight: 300;
+    color: var(--linen);
+    letter-spacing: 0.18em;
+    opacity: 0;
+    animation: loaderFade 0.6s ease 0.3s forwards;
+  }
+  .loader-line-wrap {
+    width: 200px; height: 1px;
+    background: rgba(221,211,192,0.15);
+    overflow: hidden;
+  }
+  .loader-line {
+    height: 100%;
+    background: var(--terracotta);
+    width: 0%;
+    animation: loaderBar 1.4s ease 0.5s forwards;
+  }
+  .loader-sub {
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 300;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(221,211,192,0.4);
+    opacity: 0;
+    animation: loaderFade 0.6s ease 0.6s forwards;
+  }
+  @keyframes loaderBar { to { width: 100%; } }
+  @keyframes loaderFade { to { opacity: 1; } }
+
+  /* ── CUSTOM CURSOR ── */
+  .cursor-dot {
+    width: 6px; height: 6px;
+    background: var(--terracotta);
+    border-radius: 50%;
+    position: fixed; pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s, background 0.2s;
+  }
+  .cursor-ring {
+    width: 38px; height: 38px;
+    border: 1px solid rgba(192,104,64,0.6);
+    border-radius: 50%;
+    position: fixed; pointer-events: none;
+    z-index: 9997;
+    transform: translate(-50%, -50%);
+    transition: width 0.4s cubic-bezier(0.16,1,0.3,1), height 0.4s cubic-bezier(0.16,1,0.3,1), border-color 0.3s;
+  }
+  .cursor-dot.hover { width: 10px; height: 10px; }
+  .cursor-ring.hover { width: 60px; height: 60px; border-color: var(--terracotta); }
+  .cursor-ring.click { width: 28px; height: 28px; }
+
+  /* ── GRAIN OVERLAY ── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9996;
+    opacity: 0.4;
+  }
+
+  /* ── PROGRESS ── */
+  .page-progress {
+    position: fixed; top: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--terracotta), var(--gold));
+    z-index: 2000;
+    width: 0%;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 8px rgba(192,104,64,0.4);
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--cream); }
+  ::-webkit-scrollbar-thumb { background: var(--terracotta); border-radius: 2px; }
+
+  /* ══════════════════════════════════════
+     NAVIGATION
+  ══════════════════════════════════════ */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 1000;
+    padding: 22px 52px;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
+  }
+  nav.scrolled {
+    background: rgba(250,247,242,0.94);
+    backdrop-filter: blur(16px) saturate(160%);
+    padding: 14px 52px;
+    box-shadow: 0 1px 0 rgba(168,136,90,0.12), 0 4px 24px rgba(26,23,20,0.06);
+  }
+
+  .nav-logo-wrap {
+    display: flex; align-items: center; gap: 12px;
+    text-decoration: none;
+  }
+  .nav-monogram {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(255,255,255,0.4);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+  .nav-monogram::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--terracotta);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .nav-logo-wrap:hover .nav-monogram::before { transform: scaleX(1); }
+  .nav-monogram span {
+    font-family: var(--serif);
+    font-size: 18px;
+    font-weight: 400;
+    color: white;
+    position: relative; z-index: 1;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-logo-text {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    color: white;
+    text-transform: uppercase;
+    transition: color 0.4s;
+  }
+  nav.scrolled .nav-logo-text { color: var(--charcoal); }
+  nav.scrolled .nav-monogram { border-color: rgba(192,104,64,0.4); }
+
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute; bottom: -3px; left: 0;
+    width: 0; height: 1px;
+    background: var(--terracotta);
+    transition: width 0.35s ease;
+  }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-links a:hover { color: white; }
+  nav.scrolled .nav-links a { color: var(--muted-text); }
+  nav.scrolled .nav-links a:hover { color: var(--terracotta); }
+
+  .nav-cta {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--charcoal);
+    background: white;
+    padding: 11px 26px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.35s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .nav-cta::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--terracotta);
+    transform: translateX(-100%);
+    transition: transform 0.35s ease;
+    z-index: 0;
+  }
+  .nav-cta span { position: relative; z-index: 1; }
+  .nav-cta:hover::before { transform: translateX(0); }
+  .nav-cta:hover { color: white; }
+  nav.scrolled .nav-cta { background: var(--terracotta); color: white; }
+  nav.scrolled .nav-cta::before { background: var(--charcoal); }
+
+  /* ══════════════════════════════════════
+     HERO
+  ══════════════════════════════════════ */
+  .hero {
+    height: 100vh; min-height: 700px;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(to bottom, rgba(26,23,20,0.5) 0%, rgba(26,23,20,0.2) 45%, rgba(26,23,20,0.75) 100%),
+      url('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1800&q=80') center/cover no-repeat;
+    transform: scale(1.06);
+    transition: transform 10s cubic-bezier(0.25,0.46,0.45,0.94);
+  }
+  .hero.loaded .hero-bg { transform: scale(1); }
+
+  /* floating geometric accent */
+  .hero-geo {
+    position: absolute;
+    top: 20%; right: 8%;
+    width: 180px; height: 180px;
+    border: 1px solid rgba(192,104,64,0.2);
+    animation: geoRotate 20s linear infinite;
+    pointer-events: none;
+  }
+  .hero-geo::before {
+    content: '';
+    position: absolute;
+    inset: 18px;
+    border: 1px solid rgba(192,104,64,0.12);
+    animation: geoRotate 15s linear infinite reverse;
+  }
+  @keyframes geoRotate { to { transform: rotate(360deg); } }
+
+  .hero-chapter {
+    position: absolute; top: 140px; left: 60px;
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 300;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+  }
+
+  .hero-content {
+    text-align: center;
+    z-index: 2;
+    padding: 0 24px;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 300;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--terracotta-light);
+    margin-bottom: 28px;
+    display: block;
+    opacity: 0;
+    animation: heroReveal 1s ease 1.8s forwards;
+  }
+
+  .hero-title {
+    font-family: var(--serif);
+    font-size: clamp(54px, 8.5vw, 116px);
+    font-weight: 300;
+    line-height: 0.9;
+    color: white;
+    margin-bottom: 32px;
+    letter-spacing: -0.015em;
+    opacity: 0;
+    animation: heroReveal 1s ease 2s forwards;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--linen);
+    display: block;
+    font-weight: 300;
+  }
+
+  .hero-sub {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    color: rgba(255,255,255,0.65);
+    margin: 0 auto 52px;
+    max-width: 400px;
+    line-height: 1.8;
+    opacity: 0;
+    animation: heroReveal 1s ease 2.2s forwards;
+  }
+
+  .hero-btns {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    opacity: 0;
+    animation: heroReveal 1s ease 2.4s forwards;
+  }
+
+  @keyframes heroReveal {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Buttons ── */
+  .btn-primary {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: white;
+    background: var(--terracotta);
+    padding: 17px 44px;
+    text-decoration: none;
+    border: 1px solid var(--terracotta);
+    transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--charcoal);
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  .btn-primary span { position: relative; z-index: 1; }
+  .btn-primary:hover::before { transform: translateY(0); }
+  .btn-primary:hover { letter-spacing: 0.32em; }
+
+  .btn-outline {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: white;
+    background: transparent;
+    padding: 17px 44px;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.4);
+    transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-outline:hover {
+    border-color: white;
+    background: rgba(255,255,255,0.08);
+    letter-spacing: 0.32em;
+  }
+  
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(0.6) translateY(20px); }
+  }
+
+  /* ══════════════════════════════════════
+     MARQUEE
+  ══════════════════════════════════════ */
+  .marquee-section {
+    background: var(--charcoal);
+    padding: 18px 0;
+    overflow: hidden;
+    border-top: 1px solid rgba(168,136,90,0.12);
+    border-bottom: 1px solid rgba(168,136,90,0.12);
+    position: relative;
+  }
+  .marquee-section::before, .marquee-section::after {
+    content: '';
+    position: absolute; top: 0; bottom: 0;
+    width: 80px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .marquee-section::before { left: 0; background: linear-gradient(90deg, var(--charcoal), transparent); }
+  .marquee-section::after { right: 0; background: linear-gradient(-90deg, var(--charcoal), transparent); }
+
+  .marquee-track {
+    display: flex; gap: 0;
+    animation: marquee 28s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee-track:hover { animation-play-state: paused; }
+  .marquee-item {
+    display: flex; align-items: center; gap: 52px;
+    padding: 0 52px;
+    flex-shrink: 0;
+  }
+  .marquee-text {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--linen);
+    letter-spacing: 0.04em;
+    transition: color 0.3s;
+  }
+  .marquee-item:hover .marquee-text { color: var(--terracotta-light); }
+  .marquee-dot { width: 3px; height: 3px; background: var(--terracotta); border-radius: 50%; flex-shrink: 0; }
+
+  /* ══════════════════════════════════════
+     BRAND STORY
+  ══════════════════════════════════════ */
+  .brand-story {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 68vh;
+  }
+
+  .brand-story-left {
+    background: var(--cream);
+    padding: 88px 68px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .brand-story-left::before {
+    content: 'II';
+    position: absolute;
+    right: -20px; bottom: 20px;
+    font-family: var(--serif);
+    font-size: 220px;
+    font-weight: 300;
+    color: rgba(192,104,64,0.05);
+    line-height: 1;
+    pointer-events: none;
+    letter-spacing: -0.05em;
+  }
+
+  .chapter-label {
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 32px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .chapter-label::before {
+    content: '';
+    display: block;
+    width: 28px; height: 1px;
+    background: var(--terracotta);
+  }
+
+  .story-headline {
+    font-family: var(--serif);
+    font-size: clamp(36px, 3.8vw, 56px);
+    font-weight: 300;
+    line-height: 1.12;
+    color: var(--charcoal);
+    margin-bottom: 32px;
+    letter-spacing: -0.01em;
+  }
+  .story-headline em { font-style: italic; color: var(--terracotta); }
+
+  .story-body {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--muted-text);
+    max-width: 440px;
+    margin-bottom: 40px;
+  }
+
+  .link-arrow {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--charcoal);
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 12px;
+    transition: gap 0.35s ease, color 0.3s;
+    position: relative;
+  }
+  .link-arrow::after { content: '→'; font-size: 13px; transition: transform 0.3s; }
+  .link-arrow:hover { gap: 22px; color: var(--terracotta); }
+  .link-arrow:hover::after { transform: translateX(4px); }
+
+  .brand-story-right {
+    position: relative; overflow: hidden;
+  }
+  .brand-story-right img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 1s cubic-bezier(0.25,0.46,0.45,0.94);
+  }
+  .brand-story-right:hover img { transform: scale(1.05); }
+  .brand-story-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(192,104,64,0.1) 0%, transparent 55%);
+    pointer-events: none;
+  }
+
+  .stat-strip {
+    background: var(--dark-brown);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .stat-item {
+    padding: 48px 32px;
+    border-right: 1px solid rgba(168,136,90,0.08);
+    text-align: center;
+    transition: background 0.4s;
+    cursor: default;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-item:hover { background: rgba(192,104,64,0.06); }
+
+  .stat-number {
+    font-family: var(--serif);
+    font-size: 52px;
+    font-weight: 300;
+    color: var(--terracotta-light);
+    line-height: 1;
+    margin-bottom: 10px;
+    display: block;
+    letter-spacing: -0.02em;
+  }
+  .stat-label {
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(212,195,176,0.5);
+  }
+
+  /* ══════════════════════════════════════
+     CATEGORIES
+  ══════════════════════════════════════ */
+  .categories-section {
+    padding: 108px 52px;
+    background: var(--warm-white);
+  }
+
+  .section-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 60px;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(32px, 3.8vw, 50px);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--charcoal);
+    letter-spacing: -0.01em;
+  }
+  .section-title em { font-style: italic; color: var(--terracotta); }
+
+  .categories-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    grid-template-rows: 440px;
+    gap: 10px;
+  }
+
+  .cat-card {
+    position: relative; overflow: hidden;
+    cursor: pointer; background: var(--linen);
+  }
+  .cat-card img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.5s ease;
+    filter: brightness(0.82);
+  }
+  .cat-card:hover img { transform: scale(1.08); filter: brightness(0.65); }
+
+  .cat-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(26,23,20,0.85) 0%, rgba(26,23,20,0.1) 50%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .cat-info {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 28px 26px;
+  }
+  .cat-name {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 400;
+    color: white;
+    display: block;
+    margin-bottom: 8px;
+    letter-spacing: 0.01em;
+    transition: letter-spacing 0.4s ease;
+  }
+  .cat-card:first-child .cat-name { font-size: 38px; }
+  .cat-card:hover .cat-name { letter-spacing: 0.06em; }
+
+  .cat-count {
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 6px;
+    display: block;
+  }
+  .cat-explore {
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--terracotta-light);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s ease;
+    display: block;
+  }
+  .cat-card:hover .cat-explore { opacity: 1; transform: translateY(0); }
+
+  /* corner tag */
+  .cat-card::after {
+    content: '';
+    position: absolute; top: 16px; right: 16px;
+    width: 28px; height: 28px;
+    border-top: 1px solid rgba(255,255,255,0.3);
+    border-right: 1px solid rgba(255,255,255,0.3);
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.4s ease;
+  }
+  .cat-card:hover::after { opacity: 1; transform: scale(1); }
+
+  /* ══════════════════════════════════════
+     PRODUCTS
+  ══════════════════════════════════════ */
+  .products-section {
+    padding: 108px 0;
+    background: var(--cream);
+    overflow: hidden;
+  }
+
+  .products-inner { padding: 0 52px; margin-bottom: 52px; }
+
+  .filter-tabs { display: flex; gap: 0; margin-top: 32px; }
+  .filter-tab {
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 11px 26px;
+    border: 1px solid var(--linen-dark);
+    cursor: pointer;
+    transition: all 0.35s;
+    background: transparent;
+    color: var(--muted-text);
+    border-right: none;
+    position: relative;
+    overflow: hidden;
+  }
+  .filter-tab:last-child { border-right: 1px solid var(--linen-dark); }
+  .filter-tab::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--charcoal);
+    transform: translateY(100%);
+    transition: transform 0.35s ease;
+  }
+  .filter-tab span { position: relative; z-index: 1; }
+  .filter-tab.active::before, .filter-tab:hover::before { transform: translateY(0); }
+  .filter-tab.active, .filter-tab:hover { color: white; border-color: var(--charcoal); }
+
+  .products-scroll-container {
+    overflow-x: auto;
+    padding: 0 52px 28px;
+    display: flex;
+    gap: 18px;
+    scrollbar-width: none;
+    cursor: grab;
+  }
+  .products-scroll-container::-webkit-scrollbar { display: none; }
+  .products-scroll-container:active { cursor: grabbing; }
+
+  .product-card {
+    flex: 0 0 292px;
+    background: white;
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s;
+  }
+  .product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 64px rgba(26,23,20,0.12);
+  }
+
+  .product-img-wrap {
+    position: relative;
+    height: 340px;
+    overflow: hidden;
+    background: var(--linen);
+  }
+  .product-img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94);
+    position: absolute; inset: 0;
+  }
+  .product-card:hover .product-img-wrap img { transform: scale(1.04); }
+  .img-hover { opacity: 0; }
+  .product-card:hover .img-primary { opacity: 0; }
+  .product-card:hover .img-hover { opacity: 1; }
+
+  .product-badge {
+    position: absolute; top: 16px; left: 16px;
+    font-family: var(--sans);
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    z-index: 2;
+  }
+  .badge-new { background: var(--terracotta); color: white; }
+  .badge-sale { background: var(--charcoal); color: white; }
+  .badge-ready { background: var(--gold); color: white; }
+
+  /* wishlist icon */
+  .product-wishlist {
+    position: absolute; top: 14px; right: 14px;
+    width: 34px; height: 34px;
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: all 0.3s ease;
+    z-index: 2;
+    font-size: 14px;
+    color: var(--muted-text);
+    border: none;
+  }
+  .product-card:hover .product-wishlist { opacity: 1; transform: translateY(0); }
+  .product-wishlist:hover { color: var(--terracotta); background: var(--cream); }
+
+  .product-info {
+    padding: 20px 22px 26px;
+    border-top: 1px solid var(--cream);
+  }
+  .product-story-tag {
+    font-family: var(--serif);
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--terracotta);
+    margin-bottom: 6px;
+    display: block;
+  }
+  .product-name {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--charcoal);
+    margin-bottom: 14px;
+    line-height: 1.2;
+  }
+  .product-footer { display: flex; align-items: center; justify-content: space-between; }
+  .product-price {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--charcoal);
+  }
+  .product-price .old {
+    text-decoration: line-through;
+    color: var(--linen-dark);
+    font-size: 12px;
+    margin-right: 6px;
+  }
+  .product-add {
+    font-family: var(--sans);
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--charcoal);
+    border: 1px solid var(--charcoal);
+    padding: 9px 16px;
+    cursor: pointer;
+    background: transparent;
+    transition: all 0.35s;
+    white-space: nowrap;
+    position: relative; overflow: hidden;
+  }
+  .product-add::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--charcoal);
+    transform: translateX(-100%);
+    transition: transform 0.35s ease;
+  }
+  .product-add span { position: relative; z-index: 1; }
+  .product-add:hover::before { transform: translateX(0); }
+  .product-add:hover { color: white; }
+
+  /* ══════════════════════════════════════
+     LIFESTYLE
+  ══════════════════════════════════════ */
+  .lifestyle-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 82vh;
+  }
+
+  .lifestyle-image { position: relative; overflow: hidden; }
+  .lifestyle-image img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 1s cubic-bezier(0.25,0.46,0.45,0.94);
+  }
+  .lifestyle-section:hover .lifestyle-image img { transform: scale(1.03); }
+  /* image overlay accent */
+  .lifestyle-image::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent 60%, rgba(192,104,64,0.08));
+    pointer-events: none;
+  }
+
+  .lifestyle-content {
+    background: var(--charcoal);
+    padding: 84px 68px;
+    display: flex; flex-direction: column; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .lifestyle-content::before {
+    content: '"';
+    position: absolute;
+    top: -60px; left: 30px;
+    font-family: var(--serif);
+    font-size: 320px;
+    font-weight: 300;
+    color: rgba(192,104,64,0.06);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .lifestyle-quote {
+    font-family: var(--serif);
+    font-size: clamp(30px, 3.2vw, 50px);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.22;
+    color: var(--linen);
+    margin-bottom: 28px;
+    position: relative; z-index: 1;
+  }
+  .lifestyle-quote em { color: var(--terracotta-light); font-style: normal; }
+
+  .lifestyle-sub {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.85;
+    color: rgba(212,195,176,0.6);
+    max-width: 380px;
+    margin-bottom: 48px;
+  }
+
+  .mood-strip {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px; margin-top: auto;
+    padding-top: 44px;
+    border-top: 1px solid rgba(168,136,90,0.12);
+  }
+  .mood-card { aspect-ratio: 1; overflow: hidden; position: relative; }
+  .mood-card img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease, filter 0.4s;
+    filter: brightness(0.7) saturate(0.8);
+  }
+  .mood-card:hover img { transform: scale(1.1); filter: brightness(0.85) saturate(1.1); }
+  .mood-card-label {
+    position: absolute; bottom: 10px; left: 12px;
+    font-family: var(--sans);
+    font-size: 8px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.75);
+  }
+
+  /* ══════════════════════════════════════
+     B2B
+  ══════════════════════════════════════ */
+  .b2b-section { background: var(--dark-brown); position: relative; overflow: hidden; }
+  .b2b-bg {
+    position: absolute; inset: 0;
+    background: url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1600&q=80') center/cover;
+    opacity: 0.1;
+  }
+  .b2b-inner { position: relative; z-index: 1; padding: 108px 84px; max-width: 1360px; margin: 0 auto; }
+  .b2b-top { display: grid; grid-template-columns: 1fr 1fr; gap: 88px; margin-bottom: 72px; align-items: center; }
+  .b2b-headline {
+    font-family: var(--serif);
+    font-size: clamp(36px, 4vw, 60px);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--linen);
+    letter-spacing: -0.01em;
+  }
+  .b2b-headline em { font-style: italic; color: var(--terracotta-light); }
+  .b2b-desc {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.85;
+    color: rgba(212,195,176,0.6);
+    margin-bottom: 36px;
+  }
+  .b2b-features {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: rgba(168,136,90,0.08);
+    border: 1px solid rgba(168,136,90,0.08);
+    margin-bottom: 72px;
+  }
+  .b2b-feature {
+    background: rgba(43,35,24,0.95);
+    padding: 52px 38px;
+    transition: background 0.4s, transform 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+  .b2b-feature::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0;
+    height: 2px; width: 0;
+    background: var(--terracotta);
+    transition: width 0.4s ease;
+  }
+  .b2b-feature:hover { background: rgba(192,104,64,0.07); }
+  .b2b-feature:hover::after { width: 100%; }
+  .b2b-feature-icon { font-size: 28px; margin-bottom: 20px; display: block; }
+  .b2b-feature-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--linen);
+    margin-bottom: 12px;
+  }
+  .b2b-feature-text {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.78;
+    color: rgba(212,195,176,0.5);
+  }
+  .b2b-showcase {
+    position: relative;
+    height: 400px; overflow: hidden;
+  }
+  .b2b-showcase img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: brightness(0.65) saturate(0.8);
+    transition: transform 0.8s ease;
+  }
+  .b2b-showcase:hover img { transform: scale(1.03); }
+  .b2b-showcase-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 24px;
+    background: rgba(26,23,20,0.3);
+  }
+  .b2b-showcase-label {
+    font-family: var(--serif);
+    font-size: 36px;
+    font-weight: 300;
+    font-style: italic;
+    color: white;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  /* ══════════════════════════════════════
+     MATERIALS
+  ══════════════════════════════════════ */
+  .materials-section { padding: 108px 84px; background: var(--warm-white); }
+  .materials-layout { display: grid; grid-template-columns: 380px 1fr; gap: 80px; align-items: start; max-width: 1360px; margin: 0 auto; }
+  .materials-tabs { display: flex; gap: 0; margin-bottom: 40px; border-bottom: 1px solid var(--linen); }
+  .mat-tab {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 12px 24px 15px;
+    cursor: pointer;
+    color: var(--muted-text);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.3s;
+  }
+  .mat-tab.active, .mat-tab:hover { color: var(--charcoal); border-bottom-color: var(--terracotta); }
+  .swatches-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; }
+  .swatch {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    cursor: pointer;
+    transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+  }
+  .swatch:hover { transform: translateY(-5px); }
+  .swatch-circle {
+    width: 66px; height: 66px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+  .swatch:hover .swatch-circle {
+    border-color: var(--terracotta);
+    box-shadow: 0 6px 20px rgba(192,104,64,0.25);
+  }
+  .swatch-name {
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--muted-text);
+    text-align: center;
+    line-height: 1.4;
+  }
+  .materials-note {
+    font-family: var(--serif);
+    font-size: 19px;
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.65;
+    color: var(--muted-text);
+    border-left: 2px solid var(--terracotta);
+    padding-left: 24px;
+    margin-top: 48px;
+  }
+
+  /* ══════════════════════════════════════
+     TESTIMONIALS
+  ══════════════════════════════════════ */
+  .testimonials-section { background: var(--linen); padding: 108px 84px; }
+  .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 64px; }
+  .testimonial-card {
+    background: var(--warm-white);
+    padding: 42px 38px;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s;
+    overflow: hidden;
+  }
+  .testimonial-card::before {
+    content: '';
+    position: absolute; bottom: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--terracotta);
+    transition: width 0.5s ease;
+  }
+  .testimonial-card:hover { transform: translateY(-8px); box-shadow: 0 24px 64px rgba(26,23,20,0.1); }
+  .testimonial-card:hover::before { width: 100%; }
+  .testimonial-quote-mark {
+    font-family: var(--serif);
+    font-size: 80px;
+    font-weight: 300;
+    color: var(--terracotta);
+    line-height: 0.7;
+    margin-bottom: 22px;
+    display: block;
+    opacity: 0.6;
+  }
+  .testimonial-text {
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.68;
+    color: var(--charcoal);
+    margin-bottom: 28px;
+  }
+  .testimonial-author { display: flex; align-items: center; gap: 14px; }
+  .author-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+  .author-name { font-family: var(--sans); font-size: 12px; font-weight: 500; color: var(--charcoal); display: block; letter-spacing: 0.04em; }
+  .author-city { font-family: var(--sans); font-size: 10px; font-weight: 300; color: var(--muted-text); letter-spacing: 0.08em; }
+  .rating-stars { color: var(--terracotta); font-size: 11px; letter-spacing: 2px; margin-bottom: 6px; }
+
+  .ugc-strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-top: 64px; }
+  .ugc-item { aspect-ratio: 1; overflow: hidden; position: relative; cursor: pointer; }
+  .ugc-item img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease, filter 0.4s;
+    filter: brightness(0.88) saturate(0.82);
+  }
+  .ugc-item:hover img { transform: scale(1.1); filter: brightness(1) saturate(1); }
+  .ugc-overlay {
+    position: absolute; inset: 0;
+    background: rgba(192,104,64,0);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.3s;
+  }
+  .ugc-item:hover .ugc-overlay { background: rgba(192,104,64,0.18); }
+  .ugc-icon { color: white; font-size: 20px; opacity: 0; transform: scale(0.6); transition: all 0.3s; }
+  .ugc-item:hover .ugc-icon { opacity: 1; transform: scale(1); }
+
+  /* ══════════════════════════════════════
+     TRUST
+  ══════════════════════════════════════ */
+  .trust-section { background: var(--charcoal); }
+  .trust-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+  .trust-item {
+    padding: 54px 42px;
+    border-right: 1px solid rgba(168,136,90,0.08);
+    display: flex; align-items: flex-start; gap: 22px;
+    transition: background 0.4s;
+    position: relative; overflow: hidden;
+  }
+  .trust-item::after {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 2px; height: 0;
+    background: var(--terracotta);
+    transition: height 0.4s ease;
+  }
+  .trust-item:hover::after { height: 100%; }
+  .trust-item:last-child { border-right: none; }
+  .trust-item:hover { background: rgba(192,104,64,0.05); }
+  .trust-icon { font-size: 30px; flex-shrink: 0; margin-top: 2px; }
+  .trust-title { font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--linen); margin-bottom: 6px; }
+  .trust-desc { font-family: var(--sans); font-size: 12px; font-weight: 300; color: rgba(212,195,176,0.45); line-height: 1.65; }
+
+  /* ══════════════════════════════════════
+     NEWSLETTER
+  ══════════════════════════════════════ */
+  .newsletter-section {
+    background: var(--cream);
+    padding: 108px 84px;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .newsletter-section::before {
+    content: 'M';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--serif);
+    font-size: 700px;
+    font-weight: 300;
+    color: rgba(192,104,64,0.03);
+    pointer-events: none;
+    white-space: nowrap;
+    line-height: 1;
+  }
+  .newsletter-title {
+    font-family: var(--serif);
+    font-size: clamp(48px, 6.5vw, 92px);
+    font-weight: 300;
+    line-height: 1.0;
+    color: var(--charcoal);
+    margin-bottom: 18px;
+    position: relative;
+  }
+  .newsletter-title em { font-style: italic; color: var(--terracotta); }
+  .newsletter-sub {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted-text);
+    margin-bottom: 52px;
+    letter-spacing: 0.06em;
+    position: relative;
+  }
+  .newsletter-form {
+    display: flex;
+    max-width: 520px;
+    margin: 0 auto;
+    position: relative;
+    box-shadow: 0 0 0 0 rgba(192,104,64,0);
+    transition: box-shadow 0.4s;
+  }
+  .newsletter-form:focus-within { box-shadow: 0 0 0 3px rgba(192,104,64,0.15); }
+  .newsletter-input {
+    flex: 1;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 300;
+    padding: 19px 26px;
+    border: 1px solid var(--linen-dark);
+    background: white;
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.3s;
+    letter-spacing: 0.04em;
+  }
+  .newsletter-input::placeholder { color: var(--linen-dark); }
+  .newsletter-input:focus { border-color: var(--terracotta); }
+  .newsletter-btn {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 19px 34px;
+    background: var(--terracotta);
+    color: white;
+    border: none; cursor: pointer;
+    transition: all 0.35s; white-space: nowrap;
+    position: relative; overflow: hidden;
+  }
+  .newsletter-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--charcoal);
+    transform: translateX(-100%);
+    transition: transform 0.35s ease;
+  }
+  .newsletter-btn span { position: relative; z-index: 1; }
+  .newsletter-btn:hover::before { transform: translateX(0); }
+  .newsletter-btn:hover { letter-spacing: 0.28em; }
+
+  /* ══════════════════════════════════════
+     FOOTER
+  ══════════════════════════════════════ */
+  footer { background: var(--dark-brown); padding: 84px 84px 44px; }
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    gap: 64px;
+    padding-bottom: 64px;
+    border-bottom: 1px solid rgba(168,136,90,0.1);
+    margin-bottom: 44px;
+  }
+  .footer-brand-name {
+    font-family: var(--serif);
+    font-size: 30px;
+    font-weight: 400;
+    color: var(--linen);
+    margin-bottom: 6px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .footer-tagline {
+    font-family: var(--serif);
+    font-size: 13px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--terracotta-light);
+    margin-bottom: 22px;
+    line-height: 1.7;
+  }
+  .footer-contact { font-family: var(--sans); font-size: 12px; font-weight: 300; color: rgba(212,195,176,0.4); line-height: 2.1; }
+  .footer-contact a { color: rgba(212,195,176,0.6); text-decoration: none; transition: color 0.3s; }
+  .footer-contact a:hover { color: var(--terracotta-light); }
+  .footer-col-title {
+    font-family: var(--sans);
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 26px;
+  }
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-links a {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 300;
+    color: rgba(212,195,176,0.5);
+    text-decoration: none;
+    transition: color 0.3s, padding-left 0.3s;
+    display: block;
+    letter-spacing: 0.03em;
+  }
+  .footer-links a:hover { color: var(--linen); padding-left: 5px; }
+
+  .footer-bottom {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .footer-copy {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 300;
+    color: rgba(212,195,176,0.25);
+    letter-spacing: 0.08em;
+  }
+  .footer-copy a {
+    color: rgba(212,195,176,0.4);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .footer-copy a:hover { color: var(--terracotta-light); }
+  .footer-social { display: flex; gap: 22px; }
+  .footer-social a {
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(212,195,176,0.35);
+    text-decoration: none;
+    transition: color 0.3s, letter-spacing 0.3s;
+  }
+  .footer-social a:hover { color: var(--terracotta-light); letter-spacing: 0.28em; }
+
+  /* ══════════════════════════════════════
+     CONSULT DRAWER
+  ══════════════════════════════════════ */
+  .drawer-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,23,20,0.65);
+    z-index: 2000;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.45s;
+    backdrop-filter: blur(6px);
+  }
+  .drawer-overlay.open { opacity: 1; pointer-events: all; }
+
+  .consult-drawer {
+    position: fixed;
+    top: 0; right: -500px; bottom: 0;
+    width: 480px;
+    background: var(--warm-white);
+    z-index: 2001;
+    padding: 64px 52px;
+    overflow-y: auto;
+    transition: right 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .consult-drawer.open { right: 0; }
+
+  .drawer-close {
+    position: absolute; top: 24px; right: 28px;
+    font-size: 18px; cursor: pointer;
+    color: var(--muted-text);
+    background: none; border: none;
+    transition: color 0.3s, transform 0.3s;
+    font-family: var(--sans);
+  }
+  .drawer-close:hover { color: var(--charcoal); transform: rotate(90deg); }
+
+  .drawer-title {
+    font-family: var(--serif);
+    font-size: 38px;
+    font-weight: 300;
+    line-height: 1.12;
+    color: var(--charcoal);
+    margin-bottom: 10px;
+  }
+  .drawer-title em { font-style: italic; color: var(--terracotta); }
+  .drawer-sub {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted-text);
+    margin-bottom: 44px;
+    line-height: 1.75;
+  }
+
+  .form-group { margin-bottom: 22px; }
+  .form-label {
+    font-family: var(--sans);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--charcoal);
+    display: block;
+    margin-bottom: 8px;
+  }
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 300;
+    padding: 14px 16px;
+    border: 1px solid var(--linen-dark);
+    background: white;
+    color: var(--charcoal);
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    border-radius: 0; appearance: none;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--terracotta);
+    box-shadow: 0 0 0 3px rgba(192,104,64,0.1);
+  }
+  .form-textarea { resize: vertical; height: 96px; }
+  .form-submit {
+    width: 100%;
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    padding: 19px;
+    background: var(--terracotta);
+    color: white;
+    border: none; cursor: pointer;
+    transition: all 0.35s; margin-top: 8px;
+    position: relative; overflow: hidden;
+  }
+  .form-submit::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--charcoal);
+    transform: translateX(-100%);
+    transition: transform 0.35s ease;
+  }
+  .form-submit span { position: relative; z-index: 1; }
+  .form-submit:hover::before { transform: translateX(0); }
+  .form-submit:hover { letter-spacing: 0.34em; }
+
+  /* ══════════════════════════════════════
+     REVEAL ANIMATIONS
+  ══════════════════════════════════════ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(38px);
+    transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.12s; }
+  .reveal-delay-2 { transition-delay: 0.24s; }
+  .reveal-delay-3 { transition-delay: 0.36s; }
+  .reveal-delay-4 { transition-delay: 0.48s; }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ══════════════════════════════════════
+     RESPONSIVE
+  ══════════════════════════════════════ */
+  @media (max-width: 1100px) {
+    .categories-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    .brand-story, .lifestyle-section { grid-template-columns: 1fr; }
+    .brand-story-right, .lifestyle-image { height: 420px; }
+    .stat-strip { grid-template-columns: repeat(2, 1fr); }
+    .b2b-top { grid-template-columns: 1fr; gap: 40px; }
+    .b2b-features { grid-template-columns: 1fr; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .ugc-strip { grid-template-columns: repeat(3, 1fr); }
+    .trust-grid { grid-template-columns: repeat(2, 1fr); }
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 44px; }
+    .swatches-grid { grid-template-columns: repeat(4, 1fr); }
+    .materials-layout { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 18px 24px; }
+    nav.scrolled { padding: 13px 24px; }
+    .nav-links { display: none; }
+    .categories-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
+    .b2b-inner { padding: 64px 28px; }
+    .materials-section, .testimonials-section, .newsletter-section { padding: 64px 28px; }
+    footer { padding: 64px 28px 36px; }
+    .footer-top { grid-template-columns: 1fr; gap: 36px; }
+    .swatches-grid { grid-template-columns: repeat(3, 1fr); }
+    .trust-grid { grid-template-columns: 1fr; }
+    .consult-drawer { width: 100%; right: -100%; }
+    body { cursor: auto; }
+    .cursor-dot, .cursor-ring { display: none; }
+    .hero-geo { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <span class="loader-logo">Monogram</span>
+  <div class="loader-line-wrap"><div class="loader-line"></div></div>
+  <span class="loader-sub">Est. 2018 · Crafted in India</span>
+</div>
+
+<!-- CURSOR -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- PROGRESS -->
+<div class="page-progress" id="pageProgress"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo-wrap">
+    <div class="nav-monogram"><span>M</span></div>
+    <span class="nav-logo-text">Monogram</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#">Living</a></li>
+    <li><a href="#">Dining</a></li>
+    <li><a href="#">Workspace</a></li>
+    <li><a href="#">B2B</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Stores</a></li>
+  </ul>
+  <button class="nav-cta" id="openDrawer"><span>Book a Consult</span></button>
+</nav>
+
+<!-- ════════════════
+     HERO
+════════════════ -->
+<section class="hero" id="heroSection">
+  <div class="hero-bg" id="heroBg"></div>
+  <div class="hero-geo"></div>
+  <div class="hero-chapter">Chapter I — The Beginning</div>
+  <div class="hero-content">
+    <span class="hero-eyebrow">Est. 2018 · Crafted in India · @monogram_designstudio</span>
+    <h1 class="hero-title">
+      Furniture That<br>Moves With
+      <em>Your Story</em>
+    </h1>
+    <p class="hero-sub">Designed for homes, hotels, and the spaces in between. Where every piece is a chapter waiting to be written.</p>
+    <div class="hero-btns">
+      <a href="#" class="btn-primary"><span>Shop Collection</span></a>
+      <a href="#" class="btn-outline" id="b2bBtn">B2B Enquiry →</a>
+    </div>
+  </div>
+  
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <div class="marquee-item">
+      <span class="marquee-text">Crafted with intention</span><span class="marquee-dot"></span>
+      <span class="marquee-text">Built to last</span><span class="marquee-dot"></span>
+      <span class="marquee-text">Made for real life</span><span class="marquee-dot"></span>
+      <span class="marquee-text">Free customization on every piece</span><span class="marquee-dot"></span>
+      <span class="marquee-text">Ships Pan India in 4–6 weeks</span><span class="marquee-dot"></span>
+      <span class="marquee-text">B2B · Hotels · Offices · Restaurants</span><span class="marquee-dot"></span>
+    </div>
+    <div class="marquee-item" aria-hidden="true">
+      <span class="marquee-text">Crafted with intention</span><span class="marquee-dot"></span>
+      <span class="marquee-text">Built to last</span><span class="marquee-dot"></span>
+      <span class="marquee-text">Made for real life</span><span class="marquee-dot"></span>
+      <span class="marquee-text">Free customization on every piece</span><span class="marquee-dot"></span>
+      <span class="marquee-text">Ships Pan India in 4–6 weeks</span><span class="marquee-dot"></span>
+      <span class="marquee-text">B2B · Hotels · Offices · Restaurants</span><span class="marquee-dot"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════
+     BRAND STORY
+════════════════ -->
+<section class="brand-story">
+  <div class="brand-story-left">
+    <div class="chapter-label reveal">Chapter II — Our Origin</div>
+    <h2 class="story-headline reveal reveal-delay-1">
+      We didn't set out<br>to sell furniture.<br>
+      <em>We set out to shape<br>how people live.</em>
+    </h2>
+    <p class="story-body reveal reveal-delay-2">
+      Monogram was born from a simple frustration — beautiful furniture that looked stunning in catalogues but felt wrong in real homes. We started small, sketching ideas on napkins, obsessing over joints, grain direction, and the way afternoon light falls on a velvet arm.
+      <br><br>
+      Today we outfit intimate bedrooms, sprawling hotel lobbies, co-working floors, and family dining rooms — all with the same obsessive attention to how things feel, not just how they look.
+    </p>
+    <a href="#" class="link-arrow reveal reveal-delay-3">Read Our Full Story</a>
+  </div>
+  <div class="brand-story-right">
+    <img src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=900&q=80" alt="Craft at Monogram" loading="lazy">
+    <div class="brand-story-overlay"></div>
+  </div>
+</section>
+
+<div class="stat-strip">
+  <div class="stat-item reveal"><span class="stat-number" data-target="7000">0</span><span class="stat-label">Pieces Crafted</span></div>
+  <div class="stat-item reveal reveal-delay-1"><span class="stat-number" data-target="340">0</span><span class="stat-label">B2B Projects</span></div>
+  <div class="stat-item reveal reveal-delay-2"><span class="stat-number" data-target="28">0</span><span class="stat-label">Cities Delivered</span></div>
+  <div class="stat-item reveal reveal-delay-3"><span class="stat-number" data-target="96">0</span><span class="stat-label">% Happy Customers</span></div>
+</div>
+
+<!-- ════════════════
+     CATEGORIES
+════════════════ -->
+<section class="categories-section">
+  <div class="section-header reveal">
+    <h2 class="section-title">Chapter III —<br><em>Choose Your Space</em></h2>
+    <a href="#" class="link-arrow">View All Categories</a>
+  </div>
+  <div class="categories-grid">
+    <div class="cat-card reveal">
+      <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1000&q=80" alt="Living Room">
+      <div class="cat-overlay"></div>
+      <div class="cat-info">
+        <span class="cat-count">42 Pieces</span>
+        <span class="cat-name">Living Room</span>
+        <span class="cat-explore">Explore →</span>
+      </div>
+    </div>
+    <div class="cat-card reveal reveal-delay-1">
+      <img src="https://images.unsplash.com/photo-1540638349517-3abd5afc5847?w=600&q=80" alt="Dining">
+      <div class="cat-overlay"></div>
+      <div class="cat-info">
+        <span class="cat-count">28 Pieces</span>
+        <span class="cat-name">Dining</span>
+        <span class="cat-explore">Explore →</span>
+      </div>
+    </div>
+    <div class="cat-card reveal reveal-delay-2">
+      <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=600&q=80" alt="Bedroom">
+      <div class="cat-overlay"></div>
+      <div class="cat-info">
+        <span class="cat-count">35 Pieces</span>
+        <span class="cat-name">Bedroom</span>
+        <span class="cat-explore">Explore →</span>
+      </div>
+    </div>
+    <div class="cat-card reveal reveal-delay-3">
+      <img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600&q=80" alt="Workspace">
+      <div class="cat-overlay"></div>
+      <div class="cat-info">
+        <span class="cat-count">19 Pieces</span>
+        <span class="cat-name">Workspace</span>
+        <span class="cat-explore">Explore →</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════
+     PRODUCTS
+════════════════ -->
+<section class="products-section">
+  <div class="products-inner">
+    <div class="section-header reveal">
+      <h2 class="section-title">Chapter IV —<br><em>The Ones People Keep<br>Coming Back To</em></h2>
+    </div>
+    <div class="filter-tabs reveal">
+      <button class="filter-tab active"><span>Best Sellers</span></button>
+      <button class="filter-tab"><span>New Arrivals</span></button>
+      <button class="filter-tab"><span>Ready to Ship</span></button>
+      <button class="filter-tab"><span>Under ₹30K</span></button>
+    </div>
+  </div>
+  <div class="products-scroll-container" id="productsScroll">
+    <div class="product-card">
+      <div class="product-img-wrap">
+        <span class="product-badge badge-new">New</span>
+        <button class="product-wishlist">♡</button>
+        <img class="img-primary" src="https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=600&q=80" alt="Aura Lounge Chair">
+        <img class="img-hover" src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80" alt="">
+      </div>
+      <div class="product-info">
+        <span class="product-story-tag">Born from a 3am sketch</span>
+        <h3 class="product-name">Aura Lounge Chair</h3>
+        <div class="product-footer">
+          <span class="product-price">₹ 34,500</span>
+          <button class="product-add"><span>Select Options</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img-wrap">
+        <span class="product-badge badge-sale">−22%</span>
+        <button class="product-wishlist">♡</button>
+        <img class="img-primary" src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80" alt="Drift Sofa">
+        <img class="img-hover" src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=600&q=80" alt="">
+      </div>
+      <div class="product-info">
+        <span class="product-story-tag">Inspired by coastal mornings</span>
+        <h3 class="product-name">Drift 3-Seater Sofa</h3>
+        <div class="product-footer">
+          <span class="product-price"><span class="old">₹ 98,000</span> ₹ 76,440</span>
+          <button class="product-add"><span>Configure →</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img-wrap">
+        <span class="product-badge badge-ready">Ready</span>
+        <button class="product-wishlist">♡</button>
+        <img class="img-primary" src="https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=600&q=80" alt="Orbit Coffee Table">
+        <img class="img-hover" src="https://images.unsplash.com/photo-1538688525198-9b88f6f53126?w=600&q=80" alt="">
+      </div>
+      <div class="product-info">
+        <span class="product-story-tag">Where conversations gather</span>
+        <h3 class="product-name">Orbit Coffee Table</h3>
+        <div class="product-footer">
+          <span class="product-price">₹ 24,800</span>
+          <button class="product-add"><span>Quick Add</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img-wrap">
+        <button class="product-wishlist">♡</button>
+        <img class="img-primary" src="https://images.unsplash.com/photo-1616137422495-1e9e46e2aa1e?w=600&q=80" alt="Canvas Dining Chair">
+        <img class="img-hover" src="https://images.unsplash.com/photo-1540638349517-3abd5afc5847?w=600&q=80" alt="">
+      </div>
+      <div class="product-info">
+        <span class="product-story-tag">A seat at every good story</span>
+        <h3 class="product-name">Canvas Dining Chair</h3>
+        <div class="product-footer">
+          <span class="product-price">₹ 11,200</span>
+          <button class="product-add"><span>Select Options</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img-wrap">
+        <span class="product-badge badge-new">New</span>
+        <button class="product-wishlist">♡</button>
+        <img class="img-primary" src="https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=600&q=80" alt="Mira Bed Frame">
+        <img class="img-hover" src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=600&q=80" alt="">
+      </div>
+      <div class="product-info">
+        <span class="product-story-tag">Where every night ends well</span>
+        <h3 class="product-name">Mira King Bed Frame</h3>
+        <div class="product-footer">
+          <span class="product-price">₹ 62,000</span>
+          <button class="product-add"><span>Configure →</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img-wrap">
+        <span class="product-badge badge-sale">−18%</span>
+        <button class="product-wishlist">♡</button>
+        <img class="img-primary" src="https://images.unsplash.com/photo-1538688525198-9b88f6f53126?w=600&q=80" alt="Terra Side Table">
+        <img class="img-hover" src="https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=600&q=80" alt="">
+      </div>
+      <div class="product-info">
+        <span class="product-story-tag">Small footprint, big character</span>
+        <h3 class="product-name">Terra Side Table</h3>
+        <div class="product-footer">
+          <span class="product-price"><span class="old">₹ 14,500</span> ₹ 11,890</span>
+          <button class="product-add"><span>Quick Add</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════
+     LIFESTYLE
+════════════════ -->
+<section class="lifestyle-section">
+  <div class="lifestyle-image">
+    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=80" alt="Styled Living Room" loading="lazy">
+  </div>
+  <div class="lifestyle-content">
+    <div class="chapter-label" style="color: rgba(212,195,176,0.38);">Chapter V — The Setting</div>
+    <blockquote class="lifestyle-quote reveal">
+      "A home should feel like a sentence<br>that <em>makes complete sense</em>."
+    </blockquote>
+    <p class="lifestyle-sub reveal reveal-delay-1">
+      We curate for how you actually live — the morning coffee rituals, the late-night reading, the Sunday dinners that run three hours longer than planned. Every piece earns its place.
+    </p>
+    <a href="#" class="btn-primary reveal reveal-delay-2" style="width: fit-content;"><span>Explore Spaces</span></a>
+    <div class="mood-strip reveal reveal-delay-3">
+      <div class="mood-card">
+        <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=400&q=80" alt="Bedroom" loading="lazy">
+        <span class="mood-card-label">Bedroom</span>
+      </div>
+      <div class="mood-card">
+        <img src="https://images.unsplash.com/photo-1540638349517-3abd5afc5847?w=400&q=80" alt="Dining" loading="lazy">
+        <span class="mood-card-label">Dining</span>
+      </div>
+      <div class="mood-card">
+        <img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&q=80" alt="Study" loading="lazy">
+        <span class="mood-card-label">Study</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════
+     B2B
+════════════════ -->
+<section class="b2b-section">
+  <div class="b2b-bg"></div>
+  <div class="b2b-inner">
+    <div class="b2b-top">
+      <div>
+        <div class="chapter-label" style="color: rgba(192,104,64,0.65);">Chapter VI — For Those Who Shape at Scale</div>
+        <h2 class="b2b-headline reveal">Hotels. Offices.<br>Restaurants.<br><em>We've furnished<br>them all.</em></h2>
+      </div>
+      <div>
+        <p class="b2b-desc reveal">From 5-star hotel lobbies in Goa to co-working hubs in Bengaluru — Monogram has a dedicated B2B division that handles bulk orders, custom dimensions, site visits, and everything in between. One point of contact. Zero headaches.</p>
+        <a href="#" class="btn-primary reveal reveal-delay-1"><span>Start a B2B Project →</span></a>
+      </div>
+    </div>
+    <div class="b2b-features">
+      <div class="b2b-feature reveal">
+        <span class="b2b-feature-icon">📦</span>
+        <h3 class="b2b-feature-title">Bulk Pricing & Discounts</h3>
+        <p class="b2b-feature-text">Volume-based pricing starting at 10+ pieces. Transparent quotes with no hidden costs. Dedicated invoicing for GST compliance.</p>
+      </div>
+      <div class="b2b-feature reveal reveal-delay-1">
+        <span class="b2b-feature-icon">🎨</span>
+        <h3 class="b2b-feature-title">Custom Dimensions & Finishes</h3>
+        <p class="b2b-feature-text">Not a single product in our catalogue can't be customised. Size, height, fabric, grain, stain — all variables are yours to control.</p>
+      </div>
+      <div class="b2b-feature reveal reveal-delay-2">
+        <span class="b2b-feature-icon">🤝</span>
+        <h3 class="b2b-feature-title">Dedicated Project Manager</h3>
+        <p class="b2b-feature-text">Every B2B project gets a named point of contact who manages design, production, logistics, and installation from day one.</p>
+      </div>
+    </div>
+    <div class="b2b-showcase reveal">
+      <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=80" alt="B2B Project" loading="lazy">
+      <div class="b2b-showcase-overlay">
+        <p class="b2b-showcase-label">"340+ commercial projects<br>and counting"</p>
+        <a href="#" class="btn-outline">View B2B Portfolio</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════
+     MATERIALS
+════════════════ -->
+<section class="materials-section">
+  <div style="max-width:1360px; margin: 0 auto;">
+    <div class="chapter-label reveal">Chapter VII — Built Your Way</div>
+    <div class="section-header reveal">
+      <h2 class="section-title">Every piece,<br><em>your palette.</em></h2>
+      <a href="#" class="link-arrow">Request Sample Kit</a>
+    </div>
+    <div class="materials-layout">
+      <div>
+        <div class="materials-tabs">
+          <button class="mat-tab active" onclick="switchTab(this)">Wood Finishes</button>
+          <button class="mat-tab" onclick="switchTab(this)">Fabrics</button>
+          <button class="mat-tab" onclick="switchTab(this)">Metal</button>
+        </div>
+        <div class="swatches-grid" id="swatchGrid">
+          <div class="swatch"><div class="swatch-circle" style="background:linear-gradient(135deg,#4a3728,#6b4c35);"></div><span class="swatch-name">Smoked Bourbon</span></div>
+          <div class="swatch"><div class="swatch-circle" style="background:linear-gradient(135deg,#3d2b1f,#5c3d2e);"></div><span class="swatch-name">Dark Walnut</span></div>
+          <div class="swatch"><div class="swatch-circle" style="background:linear-gradient(135deg,#c9a87c,#b8945f);"></div><span class="swatch-name">Natural Teak</span></div>
+          <div class="swatch"><div class="swatch-circle" style="background:linear-gradient(135deg,#7a6b56,#9c8060);"></div><span class="swatch-name">Warm Oak</span></div>
+          <div class="swatch"><div class="swatch-circle" style="background:linear-gradient(135deg,#1a1714,#2d2520);"></div><span class="swatch-name">Intense Black</span></div>
+          <div class="swatch"><div class="swatch-circle" style="background:linear-gradient(135deg,#e8ddc8,#d4c9b0);"></div><span class="swatch-name">Aged Ivory</span></div>
+          <div class="swatch"><div class="swatch-circle" style="background:linear-gradient(135deg,#8b6f47,#a07c50);"></div><span class="swatch-name">Honey Pine</span></div>
+          <div class="swatch"><div class="swatch-circle" style="background:linear-gradient(135deg,#5c4a38,#7a6248);"></div><span class="swatch-name">Lava Brown</span></div>
+          <div class="swatch"><div class="swatch-circle" style="background:linear-gradient(135deg,#a0896b,#b89b78);"></div><span class="swatch-name">Caramel Ash</span></div>
+          <div class="swatch"><div class="swatch-circle" style="background:linear-gradient(135deg,#6b5a42,#897050);"></div><span class="swatch-name">Mango Wood</span></div>
+        </div>
+      </div>
+      <div>
+        <img src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=800&q=80" alt="Materials" style="width:100%;height:320px;object-fit:cover;margin-bottom:32px;" loading="lazy">
+        <blockquote class="materials-note">"Every piece is made to order. Choose your material, we handle the rest — from workshop to your door."</blockquote>
+        <p style="font-family:var(--sans);font-size:13px;font-weight:300;color:var(--muted-text);line-height:1.8;margin-top:24px;">Free material sample kits available for all B2B clients and orders above ₹50,000. Shipped within 3 business days.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════
+     TESTIMONIALS
+════════════════ -->
+<section class="testimonials-section">
+  <div style="max-width:1360px; margin:0 auto;">
+    <div class="chapter-label reveal">Chapter VIII — What Our Customers Say</div>
+    <div class="section-header reveal">
+      <h2 class="section-title">Stories from<br><em>our customers.</em></h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal">
+        <span class="testimonial-quote-mark">"</span>
+        <div class="rating-stars">★★★★★</div>
+        <p class="testimonial-text">We furnished our entire Alibaug villa through Monogram. Every single piece arrived exactly as envisioned. The craftsmanship is genuinely exceptional for the price point.</p>
+        <div class="testimonial-author">
+          <img class="author-avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" alt="Priya Sharma">
+          <div><span class="author-name">Priya Sharma</span><span class="author-city">Mumbai · Living Room + Bedroom</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-1">
+        <span class="testimonial-quote-mark">"</span>
+        <div class="rating-stars">★★★★★</div>
+        <p class="testimonial-text">As a hospitality architect, I've worked with dozens of furniture vendors. Monogram is the only one that truly understands the scale and precision demands of commercial projects. Our hotel lobby has never looked better.</p>
+        <div class="testimonial-author">
+          <img class="author-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="Arjun Mehta">
+          <div><span class="author-name">Arjun Mehta</span><span class="author-city">Bengaluru · Boutique Hotel Project</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-2">
+        <span class="testimonial-quote-mark">"</span>
+        <div class="rating-stars">★★★★★</div>
+        <p class="testimonial-text">Ordered the Drift sofa in a custom olive bouclé that I couldn't find anywhere else. It arrived in five weeks, fully assembled. It's become the centrepiece of everything we do at home.</p>
+        <div class="testimonial-author">
+          <img class="author-avatar" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80" alt="Nisha Kapoor">
+          <div><span class="author-name">Nisha Kapoor</span><span class="author-city">Delhi · D2C Purchase</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="ugc-strip reveal">
+      <div class="ugc-item"><img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&q=80" alt="" loading="lazy"><div class="ugc-overlay"><span class="ugc-icon">♡</span></div></div>
+      <div class="ugc-item"><img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300&q=80" alt="" loading="lazy"><div class="ugc-overlay"><span class="ugc-icon">♡</span></div></div>
+      <div class="ugc-item"><img src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=300&q=80" alt="" loading="lazy"><div class="ugc-overlay"><span class="ugc-icon">♡</span></div></div>
+      <div class="ugc-item"><img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=300&q=80" alt="" loading="lazy"><div class="ugc-overlay"><span class="ugc-icon">♡</span></div></div>
+      <div class="ugc-item"><img src="https://images.unsplash.com/photo-1540638349517-3abd5afc5847?w=300&q=80" alt="" loading="lazy"><div class="ugc-overlay"><span class="ugc-icon">♡</span></div></div>
+      <div class="ugc-item"><img src="https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=300&q=80" alt="" loading="lazy"><div class="ugc-overlay"><span class="ugc-icon">♡</span></div></div>
+    </div>
+    <p style="font-family:var(--sans);font-size:10px;font-weight:300;letter-spacing:0.2em;color:var(--muted-text);text-align:center;margin-top:18px;text-transform:uppercase;">Tag us @monogram_designstudio on Instagram</p>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section class="trust-section">
+  <div class="trust-grid">
+    <div class="trust-item reveal">
+      <span class="trust-icon">🛠</span>
+      <div><p class="trust-title">Made to Order</p><p class="trust-desc">Ships Pan India in 4–6 weeks. Every piece built after you order it — no warehouse dust.</p></div>
+    </div>
+    <div class="trust-item reveal reveal-delay-1">
+      <span class="trust-icon">🎨</span>
+      <div><p class="trust-title">Free Customization</p><p class="trust-desc">Select your stains, fabrics, metals & finishes. No extra charge, ever.</p></div>
+    </div>
+    <div class="trust-item reveal reveal-delay-2">
+      <span class="trust-icon">🚚</span>
+      <div><p class="trust-title">Pan India Delivery</p><p class="trust-desc">White-glove delivery to 28+ cities. Fully insured in transit. Assembly included.</p></div>
+    </div>
+    <div class="trust-item reveal reveal-delay-3">
+      <span class="trust-icon">🛡</span>
+      <div><p class="trust-title">1-Year Warranty</p><p class="trust-desc">Easy aftercare scheduling, warranty claims, and product care kits on every order.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter-section">
+  <div class="chapter-label reveal" style="justify-content:center;margin-bottom:24px;">Chapter X — The Closing</div>
+  <h2 class="newsletter-title reveal">Join<br>the <em>Story.</em></h2>
+  <p class="newsletter-sub reveal reveal-delay-1">Be first to know about new collections, B2B previews, and design stories.</p>
+  <div class="newsletter-form reveal reveal-delay-2">
+    <input class="newsletter-input" type="email" placeholder="Your email address" id="nlInput">
+    <button class="newsletter-btn" id="nlBtn"><span>Subscribe</span></button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <p class="footer-brand-name">Monogram</p>
+      <p class="footer-tagline">"Every Room Has a Story.<br>We Help You Tell It."</p>
+      <p class="footer-contact">
+        hello@monogram.in<br>
+        +91 98765 43210<br>
+        <a href="#">Mumbai · Bengaluru · Delhi</a>
+      </p>
+    </div>
+    <div>
+      <p class="footer-col-title">Shop</p>
+      <ul class="footer-links">
+        <li><a href="#">Living Room</a></li>
+        <li><a href="#">Dining</a></li>
+        <li><a href="#">Bedroom</a></li>
+        <li><a href="#">Workspace</a></li>
+        <li><a href="#">New Arrivals</a></li>
+        <li><a href="#">Sale</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-col-title">Services</p>
+      <ul class="footer-links">
+        <li><a href="#">B2B / Commercial</a></li>
+        <li><a href="#">Book a Consult</a></li>
+        <li><a href="#">Visit a Store</a></li>
+        <li><a href="#">Material Samples</a></li>
+        <li><a href="#">Aftercare & Warranty</a></li>
+        <li><a href="#">Catalogue</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="footer-col-title">Company</p>
+      <ul class="footer-links">
+        <li><a href="#">Our Story</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Shipping Policy</a></li>
+        <li><a href="#">Returns & Exchange</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">
+      © 2025 Monogram. All rights reserved. Crafted in India. &nbsp;|&nbsp;
+      Powered by <a href="#" target="_blank">Metryx Technologies</a>
+    </span>
+    <div class="footer-social">
+      <a href="https://www.instagram.com/monogram_designstudio" target="_blank">Instagram</a>
+      <a href="#">Pinterest</a>
+      <a href="#">Houzz</a>
+      <a href="#">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<!-- CONSULT DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div class="consult-drawer" id="consultDrawer">
+  <button class="drawer-close" id="closeDrawer">✕</button>
+  <h3 class="drawer-title">Book a<br><em>Design Consult</em></h3>
+  <p class="drawer-sub">Tell us about your space. A Monogram specialist will reach out within 24 hours.</p>
+  <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" type="text" placeholder="Your name"></div>
+  <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="your@email.com"></div>
+  <div class="form-group"><label class="form-label">Phone</label><input class="form-input" type="tel" placeholder="+91 XXXXX XXXXX"></div>
+  <div class="form-group">
+    <label class="form-label">Space Type</label>
+    <select class="form-select">
+      <option value="">Select your space</option>
+      <option>Home — Full Interior</option>
+      <option>Home — Single Room</option>
+      <option>Hotel / Resort</option>
+      <option>Office / Co-working</option>
+      <option>Restaurant / Café</option>
+      <option>Retail Store</option>
+      <option>Other Commercial</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Budget Range</label>
+    <select class="form-select">
+      <option value="">Approx. budget</option>
+      <option>Under ₹1 Lakh</option>
+      <option>₹1–5 Lakhs</option>
+      <option>₹5–20 Lakhs</option>
+      <option>₹20 Lakhs+</option>
+    </select>
+  </div>
+  <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" placeholder="Tell us about your project, timeline, or any specific pieces you're interested in..."></textarea></div>
+  <button class="form-submit"><span>Send My Enquiry →</span></button>
+</div>
+
+<script>
+  /* ── LOADER ── */
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('loader').classList.add('hidden');
+      document.getElementById('heroSection').classList.add('loaded');
+    }, 1900);
+  });
+
+  /* ── CURSOR ── */
+  const dot = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+  });
+
+  (function animateRing() {
+    rx += (mx - rx) * 0.10;
+    ry += (my - ry) * 0.10;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  })();
+
+  document.addEventListener('mousedown', () => ring.classList.add('click'));
+  document.addEventListener('mouseup', () => ring.classList.remove('click'));
+
+  document.querySelectorAll('a, button, .cat-card, .product-card, .swatch, .ugc-item').forEach(el => {
+    el.addEventListener('mouseenter', () => { dot.classList.add('hover'); ring.classList.add('hover'); });
+    el.addEventListener('mouseleave', () => { dot.classList.remove('hover'); ring.classList.remove('hover'); });
+  });
+
+  /* ── SCROLL EFFECTS ── */
+  const nav = document.getElementById('mainNav');
+  const progress = document.getElementById('pageProgress');
+
+  window.addEventListener('scroll', () => {
+    const st = window.scrollY;
+    const dh = document.body.scrollHeight - window.innerHeight;
+    progress.style.width = (st / dh * 100) + '%';
+    nav.classList.toggle('scrolled', st > 80);
+
+    // parallax hero bg
+    const heroBg = document.getElementById('heroBg');
+    if (heroBg) heroBg.style.transform = `scale(1) translateY(${st * 0.25}px)`;
+  }, { passive: true });
+
+  /* ── REVEAL ── */
+  const revealObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+  /* ── COUNTER ANIMATION ── */
+  const counters = document.querySelectorAll('.stat-number[data-target]');
+  const counterObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      const target = parseInt(el.dataset.target);
+      const suffix = el.nextElementSibling?.textContent.includes('%') ? '' : (target >= 1000 ? '+' : (target === 96 ? '%' : (target === 28 ? '' : '+')));
+      let current = 0;
+      const step = target / 60;
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        const display = target >= 1000 ? (Math.round(current / 100) / 10).toFixed(1) + 'K' : Math.round(current);
+        el.textContent = display + (target >= 100 && target < 1000 ? (current >= target ? '+' : '') : '') + (target === 96 ? '%' : '');
+        if (current >= target) clearInterval(timer);
+      }, 16);
+      counterObs.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(c => counterObs.observe(c));
+
+  /* ── DRAWER ── */
+  const drawer = document.getElementById('consultDrawer');
+  const overlay = document.getElementById('drawerOverlay');
+  const openBtn = document.getElementById('openDrawer');
+  const closeBtn = document.getElementById('closeDrawer');
+  function openDrawer() { drawer.classList.add('open'); overlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  function closeDrawerFn() { drawer.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow = ''; }
+  openBtn.addEventListener('click', openDrawer);
+  document.getElementById('b2bBtn')?.addEventListener('click', e => { e.preventDefault(); openDrawer(); });
+  closeBtn.addEventListener('click', closeDrawerFn);
+  overlay.addEventListener('click', closeDrawerFn);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawerFn(); });
+
+  /* ── FILTER TABS ── */
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  /* ── MATERIAL TABS ── */
+  window.switchTab = function(el) {
+    document.querySelectorAll('.mat-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    const swatches = {
+      'Wood Finishes': [
+        ['linear-gradient(135deg,#4a3728,#6b4c35)','Smoked Bourbon'],['linear-gradient(135deg,#3d2b1f,#5c3d2e)','Dark Walnut'],
+        ['linear-gradient(135deg,#c9a87c,#b8945f)','Natural Teak'],['linear-gradient(135deg,#7a6b56,#9c8060)','Warm Oak'],
+        ['linear-gradient(135deg,#1a1714,#2d2520)','Intense Black'],['linear-gradient(135deg,#e8ddc8,#d4c9b0)','Aged Ivory'],
+        ['linear-gradient(135deg,#8b6f47,#a07c50)','Honey Pine'],['linear-gradient(135deg,#5c4a38,#7a6248)','Lava Brown'],
+        ['linear-gradient(135deg,#a0896b,#b89b78)','Caramel Ash'],['linear-gradient(135deg,#6b5a42,#897050)','Mango Wood'],
+      ],
+      'Fabrics': [
+        ['linear-gradient(135deg,#b8a898,#c9bdb0)','Ivory Bouclé'],['linear-gradient(135deg,#6b7b5e,#7d9168)','Olive Velvet'],
+        ['linear-gradient(135deg,#8fa0b0,#a8b8c4)','Steel Blue'],['linear-gradient(135deg,#c9a07a,#d4b090)','Warm Linen'],
+        ['linear-gradient(135deg,#c4897a,#d4a090)','Blush Corduroy'],['linear-gradient(135deg,#3a3830,#5a5848)','Charcoal Tweed'],
+        ['linear-gradient(135deg,#d4cfc0,#e0dbd0)','Cream Textured'],['linear-gradient(135deg,#5e6b58,#728068)','Forest Green'],
+        ['linear-gradient(135deg,#c4a878,#d4bc90)','Camel Suede'],['linear-gradient(135deg,#b0a8c0,#c0b8d0)','Lavender Velvet'],
+      ],
+      'Metal': [
+        ['linear-gradient(135deg,#1a1714,#2d2520)','Matte Black'],['linear-gradient(135deg,#a8955a,#c4ae6a)','Brushed Gold'],
+        ['linear-gradient(135deg,#8a8a8a,#a0a0a0)','Chrome Silver'],['linear-gradient(135deg,#6b4c28,#8a6235)','Copper Bronze'],
+        ['linear-gradient(135deg,#4a4a48,#606060)','Gunmetal'],['linear-gradient(135deg,#c0c0c0,#d8d8d8)','Stainless Steel'],
+        ['linear-gradient(135deg,#7a6c50,#9a8860)','Antique Brass'],['linear-gradient(135deg,#3a3028,#504038)','Oil Rubbed Bronze'],
+      ]
+    };
+    const key = el.textContent.trim();
+    const grid = document.getElementById('swatchGrid');
+    if (!swatches[key]) return;
+    grid.style.opacity = '0';
+    grid.style.transform = 'translateY(8px)';
+    setTimeout(() => {
+      grid.innerHTML = swatches[key].map(([bg, name]) => `
+        <div class="swatch">
+          <div class="swatch-circle" style="background:${bg};"></div>
+          <span class="swatch-name">${name}</span>
+        </div>
+      `).join('');
+      grid.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      grid.style.opacity = '1';
+      grid.style.transform = 'translateY(0)';
+    }, 180);
+  };
+
+  /* ── DRAG SCROLL ── */
+  const ps = document.getElementById('productsScroll');
+  let isDown = false, startX, scrollLeft;
+  ps.addEventListener('mousedown', e => { isDown = true; startX = e.pageX - ps.offsetLeft; scrollLeft = ps.scrollLeft; ps.style.userSelect = 'none'; });
+  ps.addEventListener('mouseleave', () => isDown = false);
+  ps.addEventListener('mouseup', () => { isDown = false; ps.style.userSelect = ''; });
+  ps.addEventListener('mousemove', e => {
+    if (!isDown) return; e.preventDefault();
+    ps.scrollLeft = scrollLeft - (e.pageX - ps.offsetLeft - startX) * 1.4;
+  });
+
+  /* ── NEWSLETTER ── */
+  document.getElementById('nlBtn')?.addEventListener('click', () => {
+    const inp = document.getElementById('nlInput');
+    if (inp.value) {
+      inp.value = '';
+      inp.placeholder = '✓  You\'re on the list!';
+      inp.style.borderColor = '#4CAF50';
+      setTimeout(() => { inp.placeholder = 'Your email address'; inp.style.borderColor = ''; }, 3500);
+    }
+  });
+
+  /* ── SCROLL TO HERO ── */
+  document.getElementById('heroScroll')?.addEventListener('click', () => {
+    window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+  });
+
+  /* ── WISHLIST TOGGLE ── */
+  document.querySelectorAll('.product-wishlist').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const active = btn.textContent === '♥';
+      btn.textContent = active ? '♡' : '♥';
+      btn.style.color = active ? '' : 'var(--terracotta)';
+    });
+  });
+</script>
+</body>
+</html>
