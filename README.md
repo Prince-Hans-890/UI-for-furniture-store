@@ -32,8 +32,13 @@ Monogram is a high-end furniture brand UI concept designed for homes, hotels, an
 
 
 ## 📂 Project Structure
+ 
+```
 monogram/
 ├── index.html       # Full page markup and structure
 ├── styles.css       # All styling — layout, animations, responsive
 ├── script.js        # All interactivity — cursor, scroll, drawer, swatches, etc.
 └── README.md        # Project documentation
+```
+ 
+---
