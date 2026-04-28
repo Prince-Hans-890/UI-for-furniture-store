@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monogram — Every Room Has a Story</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@200;300;400;500;600&family=EB+Garamond:ital,wght@1,400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- LOADER -->
+  <div id="loader">
+    <span class="loader-logo">Monogram</span>
+    <div class="loader-line-wrap">
+      <div class="loader-line"></div>
+    </div>
+    <span class="loader-sub">Est. 2018 · Crafted in India</span>
+  </div>
+
+  <!-- CURSOR -->
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- PROGRESS BAR -->
+  <div class="page-progress" id="pageProgress"></div>
+
+  <!-- NAV -->
+  <nav id="mainNav">
+    <a href="#" class="nav-logo-wrap">
+      <div class="nav-monogram"><span>M</span></div>
+      <span class="nav-logo-text">Monogram</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#">Living</a></li>
+      <li><a href="#">Dining</a></li>
+      <li><a href="#">Workspace</a></li>
+      <li><a href="#">B2B</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Stores</a></li>
+    </ul>
+    <button class="nav-cta" id="openDrawer"><span>Book a Consult</span></button>
+  </nav>
+
+  <!-- ════════════════ HERO ════════════════ -->
+  <section class="hero" id="heroSection">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-geo"></div>
+    <div class="hero-chapter">Chapter I — The Beginning</div>
+    <div class="hero-content">
+      <span class="hero-eyebrow">Est. 2018 · Crafted in India · @monogram_designstudio</span>
+      <h1 class="hero-title">
+        Furniture That<br>Moves With
+        <em>Your Story</em>
+      </h1>
+      <p class="hero-sub">Designed for homes, hotels, and the spaces in between. Where every piece is a chapter waiting
+        to be written.</p>
+      <div class="hero-btns">
+        <a href="#" class="btn-primary"><span>Shop Collection</span></a>
+        <a href="#" class="btn-outline" id="b2bBtn">B2B Enquiry →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <div class="marquee-item">
+        <span class="marquee-text">Crafted with intention</span><span class="marquee-dot"></span>
+        <span class="marquee-text">Built to last</span><span class="marquee-dot"></span>
+        <span class="marquee-text">Made for real life</span><span class="marquee-dot"></span>
+        <span class="marquee-text">Free customization on every piece</span><span class="marquee-dot"></span>
+        <span class="marquee-text">Ships Pan India in 4–6 weeks</span><span class="marquee-dot"></span>
+        <span class="marquee-text">B2B · Hotels · Offices · Restaurants</span><span class="marquee-dot"></span>
+      </div>
+      <div class="marquee-item" aria-hidden="true">
+        <span class="marquee-text">Crafted with intention</span><span class="marquee-dot"></span>
+        <span class="marquee-text">Built to last</span><span class="marquee-dot"></span>
+        <span class="marquee-text">Made for real life</span><span class="marquee-dot"></span>
+        <span class="marquee-text">Free customization on every piece</span><span class="marquee-dot"></span>
+        <span class="marquee-text">Ships Pan India in 4–6 weeks</span><span class="marquee-dot"></span>
+        <span class="marquee-text">B2B · Hotels · Offices · Restaurants</span><span class="marquee-dot"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════ BRAND STORY ════════════════ -->
+  <section class="brand-story">
+    <div class="brand-story-left">
+      <div class="chapter-label reveal">Chapter II — Our Origin</div>
+      <h2 class="story-headline reveal reveal-delay-1">
+        We didn't set out<br>to sell furniture.<br>
+        <em>We set out to shape<br>how people live.</em>
+      </h2>
+      <p class="story-body reveal reveal-delay-2">
+        Monogram was born from a simple frustration — beautiful furniture that looked stunning in catalogues but felt
+        wrong in real homes. We started small, sketching ideas on napkins, obsessing over joints, grain direction, and
+        the way afternoon light falls on a velvet arm.
+        <br><br>
+        Today we outfit intimate bedrooms, sprawling hotel lobbies, co-working floors, and family dining rooms — all
+        with the same obsessive attention to how things feel, not just how they look.
+      </p>
+      <a href="#" class="link-arrow reveal reveal-delay-3">Read Our Full Story</a>
+    </div>
+    <div class="brand-story-right">
+      <img src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=900&q=80" alt="Craft at Monogram"
+        loading="lazy">
+      <div class="brand-story-overlay"></div>
+    </div>
+  </section>
+
+  <div class="stat-strip">
+    <div class="stat-item reveal"><span class="stat-number" data-target="7000">0</span><span class="stat-label">Pieces
+        Crafted</span></div>
+    <div class="stat-item reveal reveal-delay-1"><span class="stat-number" data-target="340">0</span><span
+        class="stat-label">B2B Projects</span></div>
+    <div class="stat-item reveal reveal-delay-2"><span class="stat-number" data-target="28">0</span><span
+        class="stat-label">Cities Delivered</span></div>
+    <div class="stat-item reveal reveal-delay-3"><span class="stat-number" data-target="96">0</span><span
+        class="stat-label">% Happy Customers</span></div>
+  </div>
+
+  <!-- ════════════════ CATEGORIES ════════════════ -->
+  <section class="categories-section">
+    <div class="section-header reveal">
+      <h2 class="section-title">Chapter III —<br><em>Choose Your Space</em></h2>
+      <a href="#" class="link-arrow">View All Categories</a>
+    </div>
+    <div class="categories-grid">
+      <div class="cat-card reveal">
+        <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1000&q=80" alt="Living Room">
+        <div class="cat-overlay"></div>
+        <div class="cat-info">
+          <span class="cat-count">42 Pieces</span>
+          <span class="cat-name">Living Room</span>
+          <span class="cat-explore">Explore →</span>
+        </div>
+      </div>
+      <div class="cat-card reveal reveal-delay-1">
+        <img src="https://images.unsplash.com/photo-1540638349517-3abd5afc5847?w=600&q=80" alt="Dining">
+        <div class="cat-overlay"></div>
+        <div class="cat-info">
+          <span class="cat-count">28 Pieces</span>
+          <span class="cat-name">Dining</span>
+          <span class="cat-explore">Explore →</span>
+        </div>
+      </div>
+      <div class="cat-card reveal reveal-delay-2">
+        <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=600&q=80" alt="Bedroom">
+        <div class="cat-overlay"></div>
+        <div class="cat-info">
+          <span class="cat-count">35 Pieces</span>
+          <span class="cat-name">Bedroom</span>
+          <span class="cat-explore">Explore →</span>
+        </div>
+      </div>
+      <div class="cat-card reveal reveal-delay-3">
+        <img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600&q=80" alt="Workspace">
+        <div class="cat-overlay"></div>
+        <div class="cat-info">
+          <span class="cat-count">19 Pieces</span>
+          <span class="cat-name">Workspace</span>
+          <span class="cat-explore">Explore →</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════ PRODUCTS ════════════════ -->
+  <section class="products-section">
+    <div class="products-inner">
+      <div class="section-header reveal">
+        <h2 class="section-title">Chapter IV —<br><em>The Ones People Keep<br>Coming Back To</em></h2>
+      </div>
+      <div class="filter-tabs reveal">
+        <button class="filter-tab active"><span>Best Sellers</span></button>
+        <button class="filter-tab"><span>New Arrivals</span></button>
+        <button class="filter-tab"><span>Ready to Ship</span></button>
+        <button class="filter-tab"><span>Under ₹30K</span></button>
+      </div>
+    </div>
+    <div class="products-scroll-container" id="productsScroll">
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <span class="product-badge badge-new">New</span>
+          <button class="product-wishlist">♡</button>
+          <img class="img-primary" src="https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=600&q=80"
+            alt="Aura Lounge Chair">
+          <img class="img-hover" src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80" alt="">
+        </div>
+        <div class="product-info">
+          <span class="product-story-tag">Born from a 3am sketch</span>
+          <h3 class="product-name">Aura Lounge Chair</h3>
+          <div class="product-footer">
+            <span class="product-price">₹ 34,500</span>
+            <button class="product-add"><span>Select Options</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <span class="product-badge badge-sale">−22%</span>
+          <button class="product-wishlist">♡</button>
+          <img class="img-primary" src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80"
+            alt="Drift Sofa">
+          <img class="img-hover" src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=600&q=80" alt="">
+        </div>
+        <div class="product-info">
+          <span class="product-story-tag">Inspired by coastal mornings</span>
+          <h3 class="product-name">Drift 3-Seater Sofa</h3>
+          <div class="product-footer">
+            <span class="product-price"><span class="old">₹ 98,000</span> ₹ 76,440</span>
+            <button class="product-add"><span>Configure →</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <span class="product-badge badge-ready">Ready</span>
+          <button class="product-wishlist">♡</button>
+          <img class="img-primary" src="https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=600&q=80"
+            alt="Orbit Coffee Table">
+          <img class="img-hover" src="https://images.unsplash.com/photo-1538688525198-9b88f6f53126?w=600&q=80" alt="">
+        </div>
+        <div class="product-info">
+          <span class="product-story-tag">Where conversations gather</span>
+          <h3 class="product-name">Orbit Coffee Table</h3>
+          <div class="product-footer">
+            <span class="product-price">₹ 24,800</span>
+            <button class="product-add"><span>Quick Add</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <button class="product-wishlist">♡</button>
+          <img class="img-primary" src="https://images.unsplash.com/photo-1616137422495-1e9e46e2aa1e?w=600&q=80"
+            alt="Canvas Dining Chair">
+          <img class="img-hover" src="https://images.unsplash.com/photo-1540638349517-3abd5afc5847?w=600&q=80" alt="">
+        </div>
+        <div class="product-info">
+          <span class="product-story-tag">A seat at every good story</span>
+          <h3 class="product-name">Canvas Dining Chair</h3>
+          <div class="product-footer">
+            <span class="product-price">₹ 11,200</span>
+            <button class="product-add"><span>Select Options</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <span class="product-badge badge-new">New</span>
+          <button class="product-wishlist">♡</button>
+          <img class="img-primary" src="https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=600&q=80"
+            alt="Mira Bed Frame">
+          <img class="img-hover" src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=600&q=80" alt="">
+        </div>
+        <div class="product-info">
+          <span class="product-story-tag">Where every night ends well</span>
+          <h3 class="product-name">Mira King Bed Frame</h3>
+          <div class="product-footer">
+            <span class="product-price">₹ 62,000</span>
+            <button class="product-add"><span>Configure →</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card">
+        <div class="product-img-wrap">
+          <span class="product-badge badge-sale">−18%</span>
+          <button class="product-wishlist">♡</button>
+          <img class="img-primary" src="https://images.unsplash.com/photo-1538688525198-9b88f6f53126?w=600&q=80"
+            alt="Terra Side Table">
+          <img class="img-hover" src="https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=600&q=80" alt="">
+        </div>
+        <div class="product-info">
+          <span class="product-story-tag">Small footprint, big character</span>
+          <h3 class="product-name">Terra Side Table</h3>
+          <div class="product-footer">
+            <span class="product-price"><span class="old">₹ 14,500</span> ₹ 11,890</span>
+            <button class="product-add"><span>Quick Add</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════ LIFESTYLE ════════════════ -->
+  <section class="lifestyle-section">
+    <div class="lifestyle-image">
+      <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=80" alt="Styled Living Room"
+        loading="lazy">
+    </div>
+    <div class="lifestyle-content">
+      <div class="chapter-label" style="color: rgba(212,195,176,0.38);">Chapter V — The Setting</div>
+      <blockquote class="lifestyle-quote reveal">
+        "A home should feel like a sentence<br>that <em>makes complete sense</em>."
+      </blockquote>
+      <p class="lifestyle-sub reveal reveal-delay-1">
+        We curate for how you actually live — the morning coffee rituals, the late-night reading, the Sunday dinners
+        that run three hours longer than planned. Every piece earns its place.
+      </p>
+      <a href="#" class="btn-primary reveal reveal-delay-2" style="width: fit-content;"><span>Explore Spaces</span></a>
+      <div class="mood-strip reveal reveal-delay-3">
+        <div class="mood-card">
+          <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=400&q=80" alt="Bedroom"
+            loading="lazy">
+          <span class="mood-card-label">Bedroom</span>
+        </div>
+        <div class="mood-card">
+          <img src="https://images.unsplash.com/photo-1540638349517-3abd5afc5847?w=400&q=80" alt="Dining"
+            loading="lazy">
+          <span class="mood-card-label">Dining</span>
+        </div>
+        <div class="mood-card">
+          <img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&q=80" alt="Study" loading="lazy">
+          <span class="mood-card-label">Study</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════ B2B ════════════════ -->
+  <section class="b2b-section">
+    <div class="b2b-bg"></div>
+    <div class="b2b-inner">
+      <div class="b2b-top">
+        <div>
+          <div class="chapter-label" style="color: rgba(192,104,64,0.65);">Chapter VI — For Those Who Shape at Scale
+          </div>
+          <h2 class="b2b-headline reveal">Hotels. Offices.<br>Restaurants.<br><em>We've furnished<br>them all.</em></h2>
+        </div>
+        <div>
+          <p class="b2b-desc reveal">From 5-star hotel lobbies in Goa to co-working hubs in Bengaluru — Monogram has a
+            dedicated B2B division that handles bulk orders, custom dimensions, site visits, and everything in between.
+            One point of contact. Zero headaches.</p>
+          <a href="#" class="btn-primary reveal reveal-delay-1"><span>Start a B2B Project →</span></a>
+        </div>
+      </div>
+      <div class="b2b-features">
+        <div class="b2b-feature reveal">
+          <span class="b2b-feature-icon">📦</span>
+          <h3 class="b2b-feature-title">Bulk Pricing & Discounts</h3>
+          <p class="b2b-feature-text">Volume-based pricing starting at 10+ pieces. Transparent quotes with no hidden
+            costs. Dedicated invoicing for GST compliance.</p>
+        </div>
+        <div class="b2b-feature reveal reveal-delay-1">
+          <span class="b2b-feature-icon">🎨</span>
+          <h3 class="b2b-feature-title">Custom Dimensions & Finishes</h3>
+          <p class="b2b-feature-text">Not a single product in our catalogue can't be customised. Size, height, fabric,
+            grain, stain — all variables are yours to control.</p>
+        </div>
+        <div class="b2b-feature reveal reveal-delay-2">
+          <span class="b2b-feature-icon">🤝</span>
+          <h3 class="b2b-feature-title">Dedicated Project Manager</h3>
+          <p class="b2b-feature-text">Every B2B project gets a named point of contact who manages design, production,
+            logistics, and installation from day one.</p>
+        </div>
+      </div>
+      <div class="b2b-showcase reveal">
+        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1400&q=80" alt="B2B Project"
+          loading="lazy">
+        <div class="b2b-showcase-overlay">
+          <p class="b2b-showcase-label">"340+ commercial projects<br>and counting"</p>
+          <a href="#" class="btn-outline">View B2B Portfolio</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════ MATERIALS ════════════════ -->
+  <section class="materials-section">
+    <div style="max-width:1360px; margin: 0 auto;">
+      <div class="chapter-label reveal">Chapter VII — Built Your Way</div>
+      <div class="section-header reveal">
+        <h2 class="section-title">Every piece,<br><em>your palette.</em></h2>
+        <a href="#" class="link-arrow">Request Sample Kit</a>
+      </div>
+      <div class="materials-layout">
+        <div>
+          <div class="materials-tabs">
+            <button class="mat-tab active" onclick="switchTab(this)">Wood Finishes</button>
+            <button class="mat-tab" onclick="switchTab(this)">Fabrics</button>
+            <button class="mat-tab" onclick="switchTab(this)">Metal</button>
+          </div>
+          <div class="swatches-grid" id="swatchGrid">
+            <div class="swatch">
+              <div class="swatch-circle" style="background:linear-gradient(135deg,#4a3728,#6b4c35);"></div><span
+                class="swatch-name">Smoked Bourbon</span>
+            </div>
+            <div class="swatch">
+              <div class="swatch-circle" style="background:linear-gradient(135deg,#3d2b1f,#5c3d2e);"></div><span
+                class="swatch-name">Dark Walnut</span>
+            </div>
+            <div class="swatch">
+              <div class="swatch-circle" style="background:linear-gradient(135deg,#c9a87c,#b8945f);"></div><span
+                class="swatch-name">Natural Teak</span>
+            </div>
+            <div class="swatch">
+              <div class="swatch-circle" style="background:linear-gradient(135deg,#7a6b56,#9c8060);"></div><span
+                class="swatch-name">Warm Oak</span>
+            </div>
+            <div class="swatch">
+              <div class="swatch-circle" style="background:linear-gradient(135deg,#1a1714,#2d2520);"></div><span
+                class="swatch-name">Intense Black</span>
+            </div>
+            <div class="swatch">
+              <div class="swatch-circle" style="background:linear-gradient(135deg,#e8ddc8,#d4c9b0);"></div><span
+                class="swatch-name">Aged Ivory</span>
+            </div>
+            <div class="swatch">
+              <div class="swatch-circle" style="background:linear-gradient(135deg,#8b6f47,#a07c50);"></div><span
+                class="swatch-name">Honey Pine</span>
+            </div>
+            <div class="swatch">
+              <div class="swatch-circle" style="background:linear-gradient(135deg,#5c4a38,#7a6248);"></div><span
+                class="swatch-name">Lava Brown</span>
+            </div>
+            <div class="swatch">
+              <div class="swatch-circle" style="background:linear-gradient(135deg,#a0896b,#b89b78);"></div><span
+                class="swatch-name">Caramel Ash</span>
+            </div>
+            <div class="swatch">
+              <div class="swatch-circle" style="background:linear-gradient(135deg,#6b5a42,#897050);"></div><span
+                class="swatch-name">Mango Wood</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <img src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=800&q=80" alt="Materials"
+            style="width:100%;height:320px;object-fit:cover;margin-bottom:32px;" loading="lazy">
+          <blockquote class="materials-note">"Every piece is made to order. Choose your material, we handle the rest —
+            from workshop to your door."</blockquote>
+          <p
+            style="font-family:var(--sans);font-size:13px;font-weight:300;color:var(--muted-text);line-height:1.8;margin-top:24px;">
+            Free material sample kits available for all B2B clients and orders above ₹50,000. Shipped within 3 business
+            days.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════ TESTIMONIALS ════════════════ -->
+  <section class="testimonials-section">
+    <div style="max-width:1360px; margin:0 auto;">
+      <div class="chapter-label reveal">Chapter VIII — What Our Customers Say</div>
+      <div class="section-header reveal">
+        <h2 class="section-title">Stories from<br><em>our customers.</em></h2>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card reveal">
+          <span class="testimonial-quote-mark">"</span>
+          <div class="rating-stars">★★★★★</div>
+          <p class="testimonial-text">We furnished our entire Alibaug villa through Monogram. Every single piece arrived
+            exactly as envisioned. The craftsmanship is genuinely exceptional for the price point.</p>
+          <div class="testimonial-author">
+            <img class="author-avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80"
+              alt="Priya Sharma">
+            <div><span class="author-name">Priya Sharma</span><span class="author-city">Mumbai · Living Room +
+                Bedroom</span></div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal reveal-delay-1">
+          <span class="testimonial-quote-mark">"</span>
+          <div class="rating-stars">★★★★★</div>
+          <p class="testimonial-text">As a hospitality architect, I've worked with dozens of furniture vendors. Monogram
+            is the only one that truly understands the scale and precision demands of commercial projects. Our hotel
+            lobby has never looked better.</p>
+          <div class="testimonial-author">
+            <img class="author-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80"
+              alt="Arjun Mehta">
+            <div><span class="author-name">Arjun Mehta</span><span class="author-city">Bengaluru · Boutique Hotel
+                Project</span></div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal reveal-delay-2">
+          <span class="testimonial-quote-mark">"</span>
+          <div class="rating-stars">★★★★★</div>
+          <p class="testimonial-text">Ordered the Drift sofa in a custom olive bouclé that I couldn't find anywhere
+            else. It arrived in five weeks, fully assembled. It's become the centrepiece of everything we do at home.
+          </p>
+          <div class="testimonial-author">
+            <img class="author-avatar" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80"
+              alt="Nisha Kapoor">
+            <div><span class="author-name">Nisha Kapoor</span><span class="author-city">Delhi · D2C Purchase</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ugc-strip reveal">
+        <div class="ugc-item"><img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&q=80" alt=""
+            loading="lazy">
+          <div class="ugc-overlay"><span class="ugc-icon">♡</span></div>
+        </div>
+        <div class="ugc-item"><img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300&q=80" alt=""
+            loading="lazy">
+          <div class="ugc-overlay"><span class="ugc-icon">♡</span></div>
+        </div>
+        <div class="ugc-item"><img src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=300&q=80" alt=""
+            loading="lazy">
+          <div class="ugc-overlay"><span class="ugc-icon">♡</span></div>
+        </div>
+        <div class="ugc-item"><img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=300&q=80" alt=""
+            loading="lazy">
+          <div class="ugc-overlay"><span class="ugc-icon">♡</span></div>
+        </div>
+        <div class="ugc-item"><img src="https://images.unsplash.com/photo-1540638349517-3abd5afc5847?w=300&q=80" alt=""
+            loading="lazy">
+          <div class="ugc-overlay"><span class="ugc-icon">♡</span></div>
+        </div>
+        <div class="ugc-item"><img src="https://images.unsplash.com/photo-1449247709967-d4461a6a6103?w=300&q=80" alt=""
+            loading="lazy">
+          <div class="ugc-overlay"><span class="ugc-icon">♡</span></div>
+        </div>
+      </div>
+      <p
+        style="font-family:var(--sans);font-size:10px;font-weight:300;letter-spacing:0.2em;color:var(--muted-text);text-align:center;margin-top:18px;text-transform:uppercase;">
+        Tag us @monogram_designstudio on Instagram</p>
+    </div>
+  </section>
+
+  <!-- TRUST -->
+  <section class="trust-section">
+    <div class="trust-grid">
+      <div class="trust-item reveal">
+        <span class="trust-icon">🛠</span>
+        <div>
+          <p class="trust-title">Made to Order</p>
+          <p class="trust-desc">Ships Pan India in 4–6 weeks. Every piece built after you order it — no warehouse dust.
+          </p>
+        </div>
+      </div>
+      <div class="trust-item reveal reveal-delay-1">
+        <span class="trust-icon">🎨</span>
+        <div>
+          <p class="trust-title">Free Customization</p>
+          <p class="trust-desc">Select your stains, fabrics, metals & finishes. No extra charge, ever.</p>
+        </div>
+      </div>
+      <div class="trust-item reveal reveal-delay-2">
+        <span class="trust-icon">🚚</span>
+        <div>
+          <p class="trust-title">Pan India Delivery</p>
+          <p class="trust-desc">White-glove delivery to 28+ cities. Fully insured in transit. Assembly included.</p>
+        </div>
+      </div>
+      <div class="trust-item reveal reveal-delay-3">
+        <span class="trust-icon">🛡</span>
+        <div>
+          <p class="trust-title">1-Year Warranty</p>
+          <p class="trust-desc">Easy aftercare scheduling, warranty claims, and product care kits on every order.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="newsletter-section">
+    <div class="chapter-label reveal" style="justify-content:center;margin-bottom:24px;">Chapter X — The Closing</div>
+    <h2 class="newsletter-title reveal">Join<br>the <em>Story.</em></h2>
+    <p class="newsletter-sub reveal reveal-delay-1">Be first to know about new collections, B2B previews, and design
+      stories.</p>
+    <div class="newsletter-form reveal reveal-delay-2">
+      <input class="newsletter-input" type="email" placeholder="Your email address" id="nlInput">
+      <button class="newsletter-btn" id="nlBtn"><span>Subscribe</span></button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div>
+        <p class="footer-brand-name">Monogram</p>
+        <p class="footer-tagline">"Every Room Has a Story.<br>We Help You Tell It."</p>
+        <p class="footer-contact">
+          hello@monogram.in<br>
+          +91 98765 43210<br>
+          <a href="#">Mumbai · Bengaluru · Delhi</a>
+        </p>
+      </div>
+      <div>
+        <p class="footer-col-title">Shop</p>
+        <ul class="footer-links">
+          <li><a href="#">Living Room</a></li>
+          <li><a href="#">Dining</a></li>
+          <li><a href="#">Bedroom</a></li>
+          <li><a href="#">Workspace</a></li>
+          <li><a href="#">New Arrivals</a></li>
+          <li><a href="#">Sale</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Services</p>
+        <ul class="footer-links">
+          <li><a href="#">B2B / Commercial</a></li>
+          <li><a href="#">Book a Consult</a></li>
+          <li><a href="#">Visit a Store</a></li>
+          <li><a href="#">Material Samples</a></li>
+          <li><a href="#">Aftercare & Warranty</a></li>
+          <li><a href="#">Catalogue</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Company</p>
+        <ul class="footer-links">
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Shipping Policy</a></li>
+          <li><a href="#">Returns & Exchange</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">
+        © 2025 Monogram. All rights reserved. Crafted in India. &nbsp;|&nbsp;
+        Powered by <a href="#" target="_blank">Metryx Technologies</a>
+      </span>
+      <div class="footer-social">
+        <a href="https://www.instagram.com/monogram_designstudio" target="_blank">Instagram</a>
+        <a href="#">Pinterest</a>
+        <a href="#">Houzz</a>
+        <a href="#">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- CONSULT DRAWER -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <div class="consult-drawer" id="consultDrawer">
+    <button class="drawer-close" id="closeDrawer">✕</button>
+    <h3 class="drawer-title">Book a<br><em>Design Consult</em></h3>
+    <p class="drawer-sub">Tell us about your space. A Monogram specialist will reach out within 24 hours.</p>
+    <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" type="text"
+        placeholder="Your name"></div>
+    <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email"
+        placeholder="your@email.com"></div>
+    <div class="form-group"><label class="form-label">Phone</label><input class="form-input" type="tel"
+        placeholder="+91 XXXXX XXXXX"></div>
+    <div class="form-group">
+      <label class="form-label">Space Type</label>
+      <select class="form-select">
+        <option value="">Select your space</option>
+        <option>Home — Full Interior</option>
+        <option>Home — Single Room</option>
+        <option>Hotel / Resort</option>
+        <option>Office / Co-working</option>
+        <option>Restaurant / Café</option>
+        <option>Retail Store</option>
+        <option>Other Commercial</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Budget Range</label>
+      <select class="form-select">
+        <option value="">Approx. budget</option>
+        <option>Under ₹1 Lakh</option>
+        <option>₹1–5 Lakhs</option>
+        <option>₹5–20 Lakhs</option>
+        <option>₹20 Lakhs+</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea"
+        placeholder="Tell us about your project, timeline, or any specific pieces you're interested in..."></textarea>
+    </div>
+    <button class="form-submit"><span>Send My Enquiry →</span></button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
