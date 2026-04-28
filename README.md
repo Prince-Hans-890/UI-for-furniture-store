@@ -15,11 +15,6 @@ Monogram is a high-end furniture brand UI concept designed for homes, hotels, an
 * **Modern Branding:** Professional typography and color palette.
 
 ## 🛠️ Tech Stack
-* **Frontend:** HTML5, CSS3 (Flexbox/Grid)
-* **Design Style:** Minimalist / Modern
-* **Version Control:** Git & GitHub
-
-## 🛠️ Tech Stack
 
 | Layer | Technology |
 |---|---|
